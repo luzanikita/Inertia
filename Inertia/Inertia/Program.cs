@@ -1,91 +1,105 @@
 ﻿using System;
 
-namespace Test
+namespace Inertia
 {
     internal class Program
     {
-        class Matrix
+        internal class Game
         {
-            private static Element[,] _map;
+            public Element[,] Map;
+            public Hero Hero { set; get; }
 
-            public Matrix(int rows, int columns)
+            public Game(Element[,] map, Hero hero)
             {
-                _map = new Element[rows, columns];
+                Console.CursorVisible = false;
+                Map = map;
+                Hero = hero;
             }
             
             public Element this[int row, int column]
             {
-                set { _map[row, column] = value; }
-                get { return _map[row, column]; }
+                set { Map[row, column] = value; }
+                get { return Map[row, column]; }
             }
 
-            public static Element GetElem(int x, int y)
+            public void MoveHero(ConsoleKeyInfo press)
             {
-                return _map[y, x];
+                switch (press.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        while (!this[Hero.Y - 1, Hero.X].IsObstacle)
+                            Hero.Move("Up");
+                        break;
+                    case ConsoleKey.DownArrow:
+                        while (!this[Hero.Y + 1, Hero.X].IsObstacle)
+                            Hero.Move("Down");
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        while (!this[Hero.Y, Hero.X - 1].IsObstacle)
+                            Hero.Move("Left");
+                        break;
+                    case ConsoleKey.RightArrow:
+                        while (!this[Hero.Y, Hero.X + 1].IsObstacle)
+                            Hero.Move("Right");
+                        break;
+                }  
             }
             
             public void Render()
             {
                 Console.Clear();
-                for(int i = 0; i < _map.GetLength(0); i++)
+                for(int i = 0; i < Map.GetLength(0); i++)
                 {
-                    for (int j = 0; j < _map.GetLength(1); j++)
+                    for (int j = 0; j < Map.GetLength(1); j++)
                     {
-                        this[i, j] = i == 0 || i == _map.GetLength(0) - 1 ||
-                                    j == 0 || j == _map.GetLength(1) - 1 ?
-                                    (Element) new Wall(j, i) : new Ground(j, i);
                         this[i, j].Display();
                     }
                 }
+                Hero.Display();
             }
         }
-        
-        abstract class Element
+
+        internal abstract class Element
         {
-            public string Shape { get; protected set; }
             public int X { get; protected set; }
             public int Y { get; protected set; }
             public bool IsObstacle { get; protected set; }
 
-            public void Display()
-            {
-                Console.SetCursorPosition(X, Y);
-                Console.Write(Shape);
-            }
+            public abstract void Display();
         }
-        
-        class Hero : Element
+
+        internal class Hero : Element
         {
             public Hero(int x, int y)
             {
                 X = x;
                 Y = y;
-                Shape = "ߐ";
                 IsObstacle = false;
             }
             
-            public void Move(ConsoleKeyInfo press)
+            public override void Display()
             {
-                switch (press.Key)
+                Console.SetCursorPosition(X, Y);
+                Console.Write("&");
+            }
+            
+            public void Move(string direction)
+            {
+                switch (direction)
                 {
-                    case ConsoleKey.UpArrow:
-                        while(!Matrix.GetElem(Y - 1, X).IsObstacle)
+                    case "Up":
                             Y--;
                         break;
-                    case ConsoleKey.DownArrow:
-                        while(!Matrix.GetElem(Y + 1, X).IsObstacle)
+                    case "Down":
                             Y++;
                         break;
-                    case ConsoleKey.LeftArrow:
-                        while(!Matrix.GetElem(Y, X - 1).IsObstacle)
+                    case "Left":
                             X--;
                         break;
-                    case ConsoleKey.RightArrow:
-                        while(!Matrix.GetElem(Y, X + 1).IsObstacle)
+                    case "Right":
                             X++;
                         break;
-                }
-                Display();
+                }  
             }
         }
         
@@ -95,8 +109,13 @@ namespace Test
             {
                 X = x;
                 Y = y;
-                Shape = "ߛ";
                 IsObstacle = true;
+            }
+
+            public override void Display()
+            {
+                Console.SetCursorPosition(X, Y);
+                Console.Write("#");
             }
         }
 
@@ -106,8 +125,13 @@ namespace Test
             {
                 X = x;
                 Y = y;
-                Shape = " ";
                 IsObstacle = false;
+            }
+            
+            public override void Display()
+            {
+                Console.SetCursorPosition(X, Y);
+                Console.Write(" ");
             }
         }
 
@@ -117,8 +141,13 @@ namespace Test
             {
                 X = x;
                 Y = y;
-                Shape = "ߡ";
                 IsObstacle = true;
+            }
+            
+            public override void Display()
+            {
+                Console.SetCursorPosition(X, Y);
+                Console.Write("%");
             }
         }
         
@@ -128,26 +157,84 @@ namespace Test
             {
                 X = x;
                 Y = y;
-                Shape = "ߋ";
                 IsObstacle = false;
+            }
+            
+            public override void Display()
+            {
+                Console.SetCursorPosition(X, Y);
+                Console.Write("$");
             }
         }
         
+        public static Game LevelDowload(string[] matrix)
+        {
+            int x = 1;
+            int y = 1;
+            Element[,] map = new Element[matrix.Length, matrix[0].Length];
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                for (int j = 0; j < matrix[i].Length; j++)
+                {
+                    switch (matrix[i][j])
+                    {
+                        case '#':
+                            map[i, j] = new Wall(j, i);
+                            break;
+                        case ' ':
+                            map[i, j] = new Ground(j, i);
+                            break;
+                        case '&':
+                            map[i, j] = new Ground(j, i);
+                            x = j;
+                            y = i;
+                            break;
+                        case '%':
+                            map[i, j] = new Trap(j, i);
+                            break;
+                        case '$':
+                            map[i, j] = new Treasure(j, i);
+                            break;
+                    }
+                }
+            }
+
+            Hero hero = new Hero(x, y);
+            return new Game(map, hero);
+        }
+        
+        
         public static void Main()
         {
-            Console.CursorVisible = false;
-            Matrix field = new Matrix(20, 20);
-            Random rng = new Random();
-            Hero hero = new Hero(rng.Next(1, 14), rng.Next(1, 14));
-            field.Render();
-            hero.Display();
+            string[] matrix =
+            {
+                    "###################", 
+                    "#          #      #", 
+                    "#          #      #", 
+                    "#          #      #", 
+                    "#$    &    #$     #", 
+                    "#   ####   ##     #", 
+                    "#          $#     #",  
+                    "#  #              #", 
+                    "#  #$        $    #", 
+                    "#  ################",
+                    "#   $             #", 
+                    "################# #", 
+                    "#       $         #", 
+                    "# #################", 
+                    "#            $    #", 
+                    "###################" 
+            };
+
+            Game level01 = LevelDowload(matrix);
+            level01.Render();
             while (true)
             {
                 ConsoleKeyInfo press = Console.ReadKey();
                 if (press.Key == ConsoleKey.Q)
                     break;
-                field.Render();
-                hero.Move(press);
+                level01.MoveHero(press);
+                level01.Render();
             }
         }
     }
