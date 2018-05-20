@@ -7,13 +7,12 @@ namespace Inertia
         {
             X = x;
             Y = y;
-            Gist = "Wall";
+            Gist = Gists.Wall;
         }
 
-        public override void Display()
+        public override String GetCurrentSymbol()
         {
-            Console.SetCursorPosition(25 + X , Y);
-            Console.Write("#");
+            return "#";
         }
     }
 }

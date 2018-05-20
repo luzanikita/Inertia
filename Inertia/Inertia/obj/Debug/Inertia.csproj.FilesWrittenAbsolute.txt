@@ -4,3 +4,9 @@
 /home/nigi4/Desktop/C#/Inertia/Inertia/obj/Debug/Inertia.exe
 /home/nigi4/Desktop/C#/Inertia/Inertia/obj/Debug/Inertia.exe.mdb
 /home/nigi4/Desktop/C#/Inertia/Inertia/bin/Debug/Newtonsoft.Json.dll
+/media/nigi4/WINDOWS USB/Inertia/Inertia/obj/Debug/.NETFramework,Version=v4.5.1.AssemblyAttribute.cs
+/media/nigi4/WINDOWS USB/Inertia/Inertia/bin/Debug/Inertia.exe.mdb
+/media/nigi4/WINDOWS USB/Inertia/Inertia/bin/Debug/Inertia.exe
+/media/nigi4/WINDOWS USB/Inertia/Inertia/obj/Debug/Inertia.exe
+/media/nigi4/WINDOWS USB/Inertia/Inertia/obj/Debug/Inertia.exe.mdb
+/media/nigi4/WINDOWS USB/Inertia/Inertia/bin/Debug/Newtonsoft.Json.dll
