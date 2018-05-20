@@ -11,16 +11,16 @@ namespace Inertia
         {
             X = x;
             Y = y;
-            Gist = "None";
+            Gist = Gists.None;
             Moving = false;
         }
-            
-        public override void Display()
+
+
+        public override String GetCurrentSymbol()
         {
-            Console.SetCursorPosition(25 + X , Y);
-            Console.Write("&");
+            return "&";
         }
-            
+
         public void Move(bool reverse = false)
         {
             switch (Direction.Key)

@@ -12,6 +12,7 @@ namespace Inertia
         private int Score { set; get; }
         private int Treasures { set; get; }
 
+
         public Game(List<string> matrix)
         {
             Console.CursorVisible = false;
@@ -102,25 +103,26 @@ namespace Inertia
             {
                 switch (this[Hero.Y, Hero.X].Gist)
                 {
-                    case "Wall":
+                    case Gists.Wall:
                         Hero.Move(true);
                         Hero.Moving = false;
                         break;
-                    case "Trap":
+                    case Gists.Trap:
                         Hero.Move(true);
                         Hero.Moving = false;
                         Health--;
                         break;
-                    case "Treasure":
+                    case Gists.Treasure:
                         Score++;
                         Treasures--;
                         this[Hero.Y, Hero.X] = new Ground(Hero.X, Hero.Y);
                         this[Hero.Y, Hero.X].Display();
                         Hero.Move();
                         break;
-                    case "StopPoint":
+                    case Gists.StopPoint:
                         Hero.Moving = false;
                         break;
+                    case Gists.None:
                     default:
                         Hero.Move();
                         break;

@@ -20,14 +20,19 @@ namespace Inertia
             reader1.Close();
             Console.SetCursorPosition(25, y + 1);
             Console.Write("Enter the number of level: ");
-            int level = Convert.ToInt32(Console.ReadLine());
+            int level;
+            int.TryParse(Console.ReadLine(), out level);
+            if (!(level >= 0))
+                level = 0;
             while (level != 1 && level != 2 && level != 3)
             {
                 Console.SetCursorPosition(25, y + 1);
                 Console.Write("Sorry, this level wasn't wound!");
                 Console.SetCursorPosition(25, y + 2);
                 Console.Write("Enter another number of level: ");
-                level = Convert.ToInt32(Console.ReadLine());
+                int.TryParse(Console.ReadLine(), out level);
+                if (!(level >= 0))
+                    level = 0;
             }
             
             List<string> matrix = new List<string>();
