@@ -1,105 +1,50 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Inertia
 {
-    class Game
+    internal class Game : ICloneable
     {
-        private Element[,] _map;
-        private Hero Hero { set; get; }
-        private int Health { set; get; }
-        private int Score { set; get; }
-        private int Treasures { set; get; }
+        public Element[,] Map { get; set; }
+        public Hero Hero { set; get; }
+        public int Health { set; get; }
+        public int Score { set; get; }
+        public int Treasures { set; get; }
 
 
-        public Game(List<string> matrix)
+        public Game(Element[,] map, Hero hero, int treasures, int score = 0, int health = 3)
         {
-            Console.CursorVisible = false;
-            LevelDowload(matrix);
-            Health = 3;
-            Score = 0;
-        }
-
-        private Element this[int row, int column]
-        {
-            set { _map[row, column] = value; }
-            get { return _map[row, column]; }
-        }
-
-        public void Start()
-        {
-            Console.Clear();
-            Render();
-            while (true)
+            Health = health;
+            Score = score;
+            Treasures = treasures;
+            Hero = new Hero(hero.X, hero.Y);
+            Map = new Element[map.GetLength(0), map.GetLength(1)];
+            for (int i = 0; i < map.GetLength(0); i++)
             {
-                ConsoleKeyInfo press = Console.ReadKey();
-                if (press.Key == ConsoleKey.Q)
+                for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    GameOver();
-                    break;
+                    Map[i, j] = (Element) map[i, j].Clone();
                 }
-
-                if (press.Key != ConsoleKey.UpArrow && press.Key != ConsoleKey.DownArrow &&
-                    press.Key != ConsoleKey.LeftArrow && press.Key != ConsoleKey.RightArrow) continue;
-                this[Hero.Y, Hero.X].Display();
-                MoveHero(press);
-                if (Treasures == 0)
-                {
-                    Score *= Health;
-                    GameOver(true);
-                    break;
-                }
-
-                if (Health <= 0)
-                {
-                    GameOver();
-                    break;
-                }
-
-                Hero.Display();
-                DisplayInfo();
-            }
+            } 
         }
 
-        private void GameOver(bool victory = false)
+        public Element this[int row, int column]
         {
-            string text;
-            int x;
-            int y;
-            Console.Clear();
-            if (victory)
-            {
-                text = "victory";
-                x = 10;
-                y = 7;
-            }
-            else
-            {
-                text = "gameover";
-                x = 20;
-                y = 5;
-            }
-
-            TextReader reader1 = new StreamReader($"../../{text}.txt");
-            string line;
-            while ((line = reader1.ReadLine()) != null) {
-                Console.SetCursorPosition(x, y);
-                Console.WriteLine(line);
-                y++;
-            }
-            reader1.Close();
-            Console.SetCursorPosition(30, y + 1);
-            Console.WriteLine($"Your Score: {Score}");
-            Console.ReadKey();
+            set { Map[row, column] = value; }
+            get { return Map[row, column]; }
         }
 
-        private void MoveHero(ConsoleKeyInfo press)
+        public object Clone()
         {
-            Hero.Direction = press;
-            Hero.Moving = true;
+            return new Game(Map, Hero, Treasures, Score, Health);
+        }
+
+        public void MoveHero(Direction direction)
+        {
             Hero.Move();
-            while (Hero.Moving)
             {
                 switch (this[Hero.Y, Hero.X].Gist)
                 {
@@ -113,83 +58,48 @@ namespace Inertia
                         Health--;
                         break;
                     case Gists.Treasure:
-                        Score++;
+                        Score += Health;
                         Treasures--;
                         this[Hero.Y, Hero.X] = new Ground(Hero.X, Hero.Y);
-                        this[Hero.Y, Hero.X].Display();
-                        Hero.Move();
                         break;
                     case Gists.StopPoint:
                         Hero.Moving = false;
                         break;
                     case Gists.None:
                     default:
-                        Hero.Move();
                         break;
                 }
             }
-        }
+        }    
 
-        private void DisplayInfo()
+        public void Save(string fileName)
         {
-            Console.SetCursorPosition(25, _map.GetLength(0) + 1);
-            Console.Write($"Score: {Score}   Health: {Health}");
-        }
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+            serializer.TypeNameHandling = TypeNameHandling.Auto;
+            serializer.Formatting = Formatting.Indented;
 
-        private void Render()
-        {
-            Console.Clear();
-            for (int i = 0; i < _map.GetLength(0); i++)
+            using (StreamWriter sw = new StreamWriter($"..//..//Saves//{fileName}.json"))
+            using (JsonWriter writer = new JsonTextWriter(sw))
             {
-                for (int j = 0; j < _map.GetLength(1); j++)
-                {
-                    this[i, j].Display();
-                }
+                serializer.Serialize(writer, this);
             }
-
-            Hero.Display();
-            DisplayInfo();
         }
 
-        private void LevelDowload(List<string> matrix)
+        public Game Open(string fileName)
         {
-            int x = 1;
-            int y = 1;
-            Treasures = 0;
-            Element[,] map = new Element[matrix.Count, matrix[0].Length];
-            for (int i = 0; i < matrix.Count; i++)
+            if (File.Exists($"../../Saves/{fileName}.json"))
             {
-                for (int j = 0; j < matrix[i].Length; j++)
+                Game obj = JsonConvert.DeserializeObject<Game>(File.ReadAllText($"../../Saves/{fileName}.json"), new JsonSerializerSettings
                 {
-                    switch (matrix[i][j])
-                    {
-                        case '#':
-                            map[i, j] = new Wall(j, i);
-                            break;
-                        case '%':
-                            map[i, j] = new Trap(j, i);
-                            break;
-                        case '$':
-                            map[i, j] = new Treasure(j, i);
-                            Treasures++;
-                            break;
-                        case '.':
-                            map[i, j] = new StopPoint(j, i);
-                            break;
-                        case '&':
-                            map[i, j] = new Ground(j, i);
-                            x = j;
-                            y = i;
-                            break;
-                        default:
-                            map[i, j] = new Ground(j, i);
-                            break;
-                    }
-                }
-            }
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    NullValueHandling = NullValueHandling.Ignore,
+                });
 
-            Hero = new Hero(x, y);
-            _map = map;
+                return obj;
+            }
+            return null;
         }
     }
 }

@@ -1,18 +1,17 @@
 ﻿using System;
 namespace Inertia
 {
-    abstract class Element
+    abstract class Element : ICloneable
     {
         public int X { get; set; }
         public int Y { get; set; }
         public Gists Gist { get; set; }
 
-        public void Display()
-        {
-            Console.SetCursorPosition(25 + X, Y);
-            Console.Write(GetCurrentSymbol());
-        }
+        public abstract System.Drawing.Bitmap GetShape();
 
-        public abstract String GetCurrentSymbol();
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

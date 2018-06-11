@@ -10,9 +10,9 @@ namespace Inertia
             Gist = Gists.Wall;
         }
 
-        public override String GetCurrentSymbol()
+        public override System.Drawing.Bitmap GetShape()
         {
-            return "#";
+            return Properties.Resources.Wall;
         }
     }
 }

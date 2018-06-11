@@ -4,3 +4,17 @@ E:\Inertia\Inertia\bin\Debug\Inertia.pdb
 E:\Inertia\Inertia\bin\Debug\Newtonsoft.Json.dll
 E:\Inertia\Inertia\obj\Debug\Inertia.csprojResolveAssemblyReference.cache
 E:\Inertia\Inertia\obj\Debug\Inertia.pdb
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\bin\Debug\Inertia.exe
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\bin\Debug\Inertia.pdb
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\bin\Debug\Newtonsoft.Json.dll
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.csprojResolveAssemblyReference.cache
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.csproj.GenerateResource.Cache
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.csproj.CoreCompileInputs.cache
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.exe
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.pdb
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.Properties.Resources.resources
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.MenuForm.resources
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.GameForm.resources
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.GameOverForm.resources
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.VictoryForm.resources
+D:\NURE\2 Семестр\ООП\Inertia\Inertia\obj\Debug\Inertia.LevelsForm.resources
