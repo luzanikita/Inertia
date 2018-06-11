@@ -4,7 +4,7 @@ namespace Inertia
 {
     internal class Hero : Element
     {
-        public ConsoleKeyInfo Direction { set; get; }
+        public Direction Direction { set; get; }
         public bool Moving { set; get; }
 
         public Hero(int x, int y)
@@ -16,34 +16,34 @@ namespace Inertia
         }
 
 
-        public override String GetCurrentSymbol()
+        public override System.Drawing.Bitmap GetShape()
         {
-            return "&";
+            return Properties.Resources.Hero;
         }
 
         public void Move(bool reverse = false)
         {
-            switch (Direction.Key)
+            switch (Direction)
             {
-                case ConsoleKey.UpArrow:
+                case Direction.Up:
                     if (reverse)
                         Y++;
                     else
                         Y--;
                     break;
-                case ConsoleKey.DownArrow:
+                case Direction.Down:
                     if (reverse)
                         Y--;
                     else
                         Y++;
                     break;
-                case ConsoleKey.LeftArrow:
+                case Direction.Left:
                     if (reverse)
                         X++;
                     else
                         X--;
                     break;
-                case ConsoleKey.RightArrow:
+                case Direction.Right:
                     if (reverse)
                         X--;
                     else
